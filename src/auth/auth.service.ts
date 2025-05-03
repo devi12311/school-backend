@@ -79,9 +79,9 @@ export class AuthService {
     return result;
   }
 
-  async getUserById(id: number) {
+  async getUserById(email: string) {
     const user = await this.usersRepository.findOne({
-      where: { id },
+      where: { email },
     });
 
     if (!user) {
@@ -90,9 +90,5 @@ export class AuthService {
 
     const { password, ...result } = user;
     return result;
-  }
-
-  async getProfile(id: number) {
-    return this.getUserById(id);
   }
 }
