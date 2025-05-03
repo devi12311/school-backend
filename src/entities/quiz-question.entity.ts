@@ -7,7 +7,7 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { QuizType } from './quiz-type.entity';
+import { Quiz } from './quiz.entity';
 import { Question } from './question.entity';
 
 @Entity('quiz_questions')
@@ -21,11 +21,14 @@ export class QuizQuestion {
   @Column()
   question_id: number;
 
-  @ManyToOne(() => QuizType)
-  @JoinColumn({ name: 'quiz_id' })
-  quiz: QuizType;
+  @Column()
+  question_order: number;
 
-  @ManyToOne(() => Question)
+  @ManyToOne(() => Quiz, (quiz) => quiz.quizQuestions)
+  @JoinColumn({ name: 'quiz_id' })
+  quiz: Quiz;
+
+  @ManyToOne(() => Question, (question) => question.quizQuestions)
   @JoinColumn({ name: 'question_id' })
   question: Question;
 

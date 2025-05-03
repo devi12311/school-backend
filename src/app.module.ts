@@ -15,11 +15,15 @@ import { Major } from './entities/major.entity';
 import { Subject } from './entities/subject.entity';
 import { Article } from './entities/article.entity';
 import { Question } from './entities/question.entity';
-import { QuizType } from './entities/quiz-type.entity';
+import { Quiz } from './entities/quiz.entity';
 import { QuizQuestion } from './entities/quiz-question.entity';
 import { Job } from './entities/job.entity';
 import { University } from './entities/university.entity';
+import { Progress } from './entities/progress.entity';
 import { JobsModule } from './jobs/jobs.module';
+import { QuizzesModule } from './quizzes/quizzes.module';
+import { QuestionsModule } from './questions/questions.module';
+import { ProgressModule } from './progress/progress.module';
 
 @Module({
   imports: [
@@ -42,10 +46,11 @@ import { JobsModule } from './jobs/jobs.module';
           Subject,
           Article,
           Question,
-          QuizType,
+          Quiz,
           QuizQuestion,
           Job,
           University,
+          Progress,
         ],
         synchronize: configService.get('NODE_ENV') !== 'production',
       }),
@@ -58,6 +63,9 @@ import { JobsModule } from './jobs/jobs.module';
     UniversitiesModule,
     SubjectsModule,
     JobsModule,
+    QuizzesModule,
+    QuestionsModule,
+    ProgressModule,
   ],
   controllers: [AppController],
   providers: [AppService],
