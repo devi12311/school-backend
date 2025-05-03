@@ -11,6 +11,8 @@ export class MajorsService {
   constructor(
     @InjectRepository(Major)
     private majorsRepository: Repository<Major>,
+    @InjectRepository(Major, 'gorse')
+    private gorseMajorsRepository: Repository<any>,
   ) {}
 
   async create(createMajorDto: CreateMajorDto): Promise<Major> {
@@ -19,8 +21,23 @@ export class MajorsService {
   }
 
   async bulkCreate(bulkCreateMajorDto: BulkCreateMajorDto): Promise<Major[]> {
+    // Create in the main database
     const majors = this.majorsRepository.create(bulkCreateMajorDto.majors);
-    return this.majorsRepository.save(majors);
+    const savedMajors = await this.majorsRepository.save(majors);
+
+    const mappedMajorsForGorse = bulkCreateMajorDto.majors.map((major) => {
+      return {
+        itemId: major.id,
+        isHidden: false,
+        categories: ['1'],
+        labels: major.tags,
+      };
+    });
+    // Create in the gorse database
+    const gorseMajors = this.gorseMajorsRepository.create(mappedMajorsForGorse);
+    await this.gorseMajorsRepository.save(gorseMajors);
+
+    return savedMajors;
   }
 
   async findAll(): Promise<Major[]> {

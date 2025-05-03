@@ -4,6 +4,9 @@ export class CreateMajorDto {
   @IsString()
   name: string;
 
+  @IsNumber()
+  id?: number;
+
   @IsArray()
   @IsString({ each: true })
   tags: string[];

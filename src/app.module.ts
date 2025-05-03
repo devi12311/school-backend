@@ -31,6 +31,7 @@ import { ProgressModule } from './progress/progress.module';
       isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
+      name: 'default',
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
@@ -53,6 +54,21 @@ import { ProgressModule } from './progress/progress.module';
           Progress,
         ],
         synchronize: configService.get('NODE_ENV') !== 'production',
+      }),
+      inject: [ConfigService],
+    }),
+    TypeOrmModule.forRootAsync({
+      name: 'gorse',
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get('DB_HOST', 'localhost'),
+        port: configService.get('DB_PORT', 5432),
+        username: configService.get('DB_USERNAME', 'postgres'),
+        password: configService.get('DB_PASSWORD', 'postgres'),
+        database: 'gorse',
+        entities: [],
+        synchronize: false,
       }),
       inject: [ConfigService],
     }),
