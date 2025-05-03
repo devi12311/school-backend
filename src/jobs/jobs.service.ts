@@ -42,7 +42,7 @@ export class JobsService {
       IsHidden: false,
       Categories: ['3'], // Using category 3 for jobs
       Timestamp: new Date().toISOString(),
-      Labels: [...job.categories, ...job.parentCategories],
+      Labels: [...job.tags],
       Comment: job.title,
     }));
 

@@ -59,6 +59,9 @@ export class CreateJobDto {
   @IsNumber()
   expiryDate: number;
 
+  @IsArray()
+  tags: string[];
+
   @IsUrl()
   applicationLink: string;
 

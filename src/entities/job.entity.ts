@@ -62,6 +62,9 @@ export class Job {
   @Column()
   guid: string;
 
+  @Column('simple-array')
+  tags: string[];
+
   @CreateDateColumn()
   created_at: Date;
 
