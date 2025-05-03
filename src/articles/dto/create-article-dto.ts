@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsArray, IsInt, IsUrl } from 'class-validator';
+import { IsString, IsNotEmpty, IsArray, IsInt, IsUrl, IsJSON } from 'class-validator';
 
 export class CreateArticleDto {
   @IsString()
@@ -18,4 +18,8 @@ export class CreateArticleDto {
   @IsInt()
   @IsNotEmpty()
   category_id: number;
+
+  @IsJSON()
+  @IsNotEmpty()
+  info: any;
 }

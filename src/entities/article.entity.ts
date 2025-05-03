@@ -26,6 +26,9 @@ export class Article {
   @Column()
   category_id: number;
 
+  @Column('jsonb', { nullable: true })
+  info: any;
+
   @ManyToOne(() => Category)
   @JoinColumn({ name: 'category_id' })
   category: Category;

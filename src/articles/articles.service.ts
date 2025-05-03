@@ -4,17 +4,31 @@ import { Repository } from 'typeorm';
 import { Article } from '../entities/article.entity';
 import { CreateArticleDto } from './dto/create-article-dto';
 import { BulkCreateArticleDto } from './dto/bulk-create-article.dto';
+import { GorseService } from '../gorse/gorse.service';
 
 @Injectable()
 export class ArticlesService {
   constructor(
     @InjectRepository(Article)
     private articlesRepository: Repository<Article>,
+    private gorseService: GorseService,
   ) {}
 
   async create(createArticleDto: CreateArticleDto): Promise<Article> {
     const article = this.articlesRepository.create(createArticleDto);
-    return this.articlesRepository.save(article);
+    const savedArticle = await this.articlesRepository.save(article);
+
+    // Insert into Gorse
+    await this.gorseService.insertItem({
+      ItemId: `article:${savedArticle.id}`,
+      IsHidden: false,
+      Categories: ['2'], // Using category 2 for articles
+      Timestamp: new Date().toISOString(),
+      Labels: savedArticle.tags,
+      Comment: savedArticle.name,
+    });
+
+    return savedArticle;
   }
 
   async bulkCreate(
@@ -23,7 +37,21 @@ export class ArticlesService {
     const articles = this.articlesRepository.create(
       bulkCreateArticleDto.articles,
     );
-    return this.articlesRepository.save(articles);
+    const savedArticles = await this.articlesRepository.save(articles);
+
+    // Insert into Gorse
+    const gorseItems = savedArticles.map((article) => ({
+      ItemId: `article:${article.id}`,
+      IsHidden: false,
+      Categories: ['2'], // Using category 2 for articles
+      Timestamp: new Date().toISOString(),
+      Labels: article.tags,
+      Comment: article.name,
+    }));
+
+    await this.gorseService.insertItems(gorseItems);
+
+    return savedArticles;
   }
 
   async findAll(): Promise<Article[]> {
