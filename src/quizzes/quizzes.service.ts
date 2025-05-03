@@ -12,6 +12,17 @@ import { QuizQuestion } from '../entities/quiz-question.entity';
 import { BulkCreateQuizDto } from './dto/bulk-create-quiz.dto';
 import { Question } from '../entities/question.entity';
 
+interface SanitizedQuiz {
+  title: string;
+  type: string;
+  description: string;
+  questions: Array<{
+    question_text: string;
+    imageUrl?: string;
+    properties: any;
+  }>;
+}
+
 @Injectable()
 export class QuizzesService {
   constructor(
@@ -23,23 +34,22 @@ export class QuizzesService {
     private questionRepository: Repository<Question>,
   ) {}
 
-  async create(createQuizDto: CreateQuizDto): Promise<Quiz> {
-    const quiz = this.quizzesRepository.create(createQuizDto);
-    return this.quizzesRepository.save(quiz);
+  private sanitizeQuiz(quiz: Quiz): SanitizedQuiz {
+    return {
+      title: quiz.title,
+      type: quiz.type,
+      description: quiz.description,
+      questions: quiz.quizQuestions
+        .sort((a, b) => a.question_order - b.question_order)
+        .map((qq) => ({
+          question_text: qq.question.question_text,
+          imageUrl: qq.question.imageUrl,
+          properties: qq.question.properties,
+        })),
+    };
   }
 
-  async bulkCreate(bulkCreateQuizDto: BulkCreateQuizDto): Promise<Quiz[]> {
-    const quizzes = this.quizzesRepository.create(bulkCreateQuizDto.quizzes);
-    return this.quizzesRepository.save(quizzes);
-  }
-
-  async findAll(): Promise<Quiz[]> {
-    return this.quizzesRepository.find({
-      relations: ['quizQuestions', 'quizQuestions.question'],
-    });
-  }
-
-  async findOne(id: number): Promise<Quiz> {
+  private async getFullQuiz(id: number): Promise<Quiz> {
     const quiz = await this.quizzesRepository.findOne({
       where: { id },
       relations: ['quizQuestions', 'quizQuestions.question'],
@@ -50,14 +60,36 @@ export class QuizzesService {
     return quiz;
   }
 
+  async findAll(): Promise<SanitizedQuiz[]> {
+    const quizzes = await this.quizzesRepository.find({
+      relations: ['quizQuestions', 'quizQuestions.question'],
+    });
+    return quizzes.map((quiz) => this.sanitizeQuiz(quiz));
+  }
+
+  async findOne(id: number): Promise<SanitizedQuiz> {
+    const quiz = await this.getFullQuiz(id);
+    return this.sanitizeQuiz(quiz);
+  }
+
+  async create(createQuizDto: CreateQuizDto): Promise<Quiz> {
+    const quiz = this.quizzesRepository.create(createQuizDto);
+    return this.quizzesRepository.save(quiz);
+  }
+
+  async bulkCreate(bulkCreateQuizDto: BulkCreateQuizDto): Promise<Quiz[]> {
+    const quizzes = this.quizzesRepository.create(bulkCreateQuizDto.quizzes);
+    return this.quizzesRepository.save(quizzes);
+  }
+
   async update(id: number, updateQuizDto: UpdateQuizDto): Promise<Quiz> {
-    const quiz = await this.findOne(id);
+    const quiz = await this.getFullQuiz(id);
     Object.assign(quiz, updateQuizDto);
     return this.quizzesRepository.save(quiz);
   }
 
   async remove(id: number): Promise<void> {
-    const quiz = await this.findOne(id);
+    const quiz = await this.getFullQuiz(id);
     await this.quizzesRepository.remove(quiz);
   }
 
@@ -65,10 +97,7 @@ export class QuizzesService {
     id: number,
     addQuestionsDto: AddQuestionsDto,
   ): Promise<Quiz> {
-    const quiz = await this.findOne(id);
-
-    // Remove existing questions
-    // await this.quizQuestionsRepository.delete({ quiz_id: id });
+    await this.getFullQuiz(id); // Verify quiz exists
 
     // Add new questions with their order
     const quizQuestions = addQuestionsDto.questions.map((q) =>
@@ -80,14 +109,14 @@ export class QuizzesService {
     );
 
     await this.quizQuestionsRepository.save(quizQuestions);
-    return this.findOne(id);
+    return this.getFullQuiz(id);
   }
 
   async matchQuestionsToQuiz(
     quizId: number,
     questionIds: number[],
   ): Promise<Quiz> {
-    const quiz = await this.findOne(quizId);
+    await this.getFullQuiz(quizId); // Verify quiz exists
 
     // Remove existing questions
     await this.quizQuestionsRepository.delete({ quiz_id: quizId });
@@ -102,11 +131,11 @@ export class QuizzesService {
     );
 
     await this.quizQuestionsRepository.save(quizQuestions);
-    return this.findOne(quizId);
+    return this.getFullQuiz(quizId);
   }
 
   async getQuestionsByQuizId(quizId: number): Promise<Question[]> {
-    const quiz = await this.findOne(quizId);
+    await this.getFullQuiz(quizId); // Verify quiz exists
     const quizQuestions = await this.quizQuestionsRepository.find({
       where: { quiz_id: quizId },
       relations: ['question'],
@@ -120,7 +149,7 @@ export class QuizzesService {
     id: number,
     addQuestionsByTypeDto: AddQuestionsByTypeDto,
   ): Promise<Quiz> {
-    const quiz = await this.findOne(id);
+    const quiz = await this.getFullQuiz(id);
     const { type } = addQuestionsByTypeDto;
 
     // Get all questions of the specified type
@@ -138,6 +167,6 @@ export class QuizzesService {
     );
 
     await this.quizQuestionsRepository.save(quizQuestions);
-    return this.findOne(id);
+    return this.getFullQuiz(id);
   }
 }

@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
 } from '@nestjs/common';
 import { QuizzesService } from './quizzes.service';
 import { CreateQuizDto } from './dto/create-quiz.dto';
@@ -17,13 +16,22 @@ import {
 } from './dto/add-questions.dto';
 import { BulkCreateQuizDto } from './dto/bulk-create-quiz.dto';
 import { MatchQuestionsDto } from './dto/match-questions.dto';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ApiResponse } from '../common/interfaces/api-response.interface';
 import { Quiz } from '../entities/quiz.entity';
 import { Question } from '../entities/question.entity';
 
+interface SanitizedQuiz {
+  title: string;
+  type: string;
+  description: string;
+  questions: Array<{
+    question_text: string;
+    imageUrl?: string;
+    properties: any;
+  }>;
+}
+
 @Controller('quizzes')
-@UseGuards(JwtAuthGuard)
 export class QuizzesController {
   constructor(private readonly quizzesService: QuizzesService) {}
 
@@ -52,7 +60,7 @@ export class QuizzesController {
   }
 
   @Get()
-  async findAll(): Promise<ApiResponse<Quiz[]>> {
+  async findAll(): Promise<ApiResponse<SanitizedQuiz[]>> {
     const data = await this.quizzesService.findAll();
     return {
       data,
@@ -62,7 +70,7 @@ export class QuizzesController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<ApiResponse<Quiz>> {
+  async findOne(@Param('id') id: string): Promise<ApiResponse<SanitizedQuiz>> {
     const data = await this.quizzesService.findOne(+id);
     return {
       data,
