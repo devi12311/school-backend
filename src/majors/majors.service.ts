@@ -58,14 +58,14 @@ export class MajorsService {
 
   async findAll(): Promise<Major[]> {
     return this.majorsRepository.find({
-      relations: ['category'],
+      relations: ['category', 'subjects'],
     });
   }
 
   async findOne(id: number): Promise<Major> {
     const major = await this.majorsRepository.findOne({
       where: { id },
-      relations: ['category'],
+      relations: ['category', 'subjects'],
     });
     if (!major) {
       throw new NotFoundException(`Major with ID ${id} not found`);
@@ -110,7 +110,7 @@ export class MajorsService {
     // Fetch the actual majors
     const majors = await this.majorsRepository.find({
       where: { id: In(majorIds) },
-      relations: ['category'],
+      relations: ['category', 'subjects'],
     });
 
     // Sort majors to match recommendation order

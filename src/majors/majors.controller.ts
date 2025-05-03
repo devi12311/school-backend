@@ -61,7 +61,10 @@ export class MajorsController {
     @Request() req,
     @Param('n') n: number = 10,
   ): Promise<ApiResponse<Major[]>> {
-    const data = await this.majorsService.getRecommendedMajors(req.user.userId, n);
+    const data = await this.majorsService.getRecommendedMajors(
+      req.user.userId,
+      n,
+    );
     return {
       data,
       message: 'Recommended majors retrieved successfully',
@@ -75,7 +78,11 @@ export class MajorsController {
     @Param('id') id: string,
     @Body('feedbackType') feedbackType: string = 'star',
   ): Promise<ApiResponse<void>> {
-    await this.majorsService.addMajorFeedback(req.user.userId, +id, feedbackType);
+    await this.majorsService.addMajorFeedback(
+      req.user.userId,
+      +id,
+      feedbackType,
+    );
     return {
       data: undefined,
       message: 'Feedback added successfully',

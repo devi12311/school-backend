@@ -163,7 +163,9 @@ export class QuizzesController {
   }
 
   @Get('type/:type')
-  async findByType(@Param('type') type: string): Promise<ApiResponse<SanitizedQuiz[]>> {
+  async findByType(
+    @Param('type') type: string,
+  ): Promise<ApiResponse<SanitizedQuiz[]>> {
     const quizType = type as QuizType;
     const data = await this.quizzesService.findByType(quizType);
     return {

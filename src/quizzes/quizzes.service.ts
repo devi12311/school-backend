@@ -65,7 +65,7 @@ export class QuizzesService {
     const quizzes = await this.quizzesRepository.find({
       relations: ['quizQuestions', 'quizQuestions.question'],
     });
-    return quizzes.map(quiz => this.sanitizeQuiz(quiz));
+    return quizzes.map((quiz) => this.sanitizeQuiz(quiz));
   }
 
   async findByType(type: QuizType): Promise<SanitizedQuiz[]> {
@@ -73,7 +73,7 @@ export class QuizzesService {
       where: { type },
       relations: ['quizQuestions', 'quizQuestions.question'],
     });
-    return quizzes.map(quiz => this.sanitizeQuiz(quiz));
+    return quizzes.map((quiz) => this.sanitizeQuiz(quiz));
   }
 
   async findOne(id: number): Promise<SanitizedQuiz> {

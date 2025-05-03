@@ -1,4 +1,10 @@
-import { Controller, Post, Body, UnauthorizedException, Put } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UnauthorizedException,
+  Put,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { User } from '../entities/user.entity';
 
