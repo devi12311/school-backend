@@ -3,9 +3,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { JobsService } from './jobs.service';
 import { JobsController } from './jobs.controller';
 import { Job } from '../entities/job.entity';
+import { GorseModule } from '../gorse/gorse.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Job])],
+  imports: [TypeOrmModule.forFeature([Job]), GorseModule],
   controllers: [JobsController],
   providers: [JobsService],
   exports: [JobsService],

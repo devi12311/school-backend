@@ -1,13 +1,61 @@
-import { IsString, IsArray, IsNumber } from 'class-validator';
+import { IsString, IsNumber, IsArray, IsOptional, IsUrl } from 'class-validator';
 
 export class CreateJobDto {
   @IsString()
-  name: string;
+  title: string;
+
+  @IsString()
+  excerpt: string;
+
+  @IsString()
+  companyName: string;
+
+  @IsUrl()
+  companyLogo: string;
+
+  @IsString()
+  employmentType: string;
+
+  @IsNumber()
+  @IsOptional()
+  minSalary?: number;
+
+  @IsNumber()
+  @IsOptional()
+  maxSalary?: number;
 
   @IsArray()
   @IsString({ each: true })
-  tags: string[];
+  seniority: string[];
+
+  @IsArray()
+  @IsString({ each: true })
+  locationRestrictions: string[];
+
+  @IsArray()
+  @IsNumber({}, { each: true })
+  timezoneRestrictions: number[];
+
+  @IsArray()
+  @IsString({ each: true })
+  categories: string[];
+
+  @IsArray()
+  @IsString({ each: true })
+  parentCategories: string[];
+
+  @IsString()
+  description: string;
 
   @IsNumber()
-  category_id: number;
+  pubDate: number;
+
+  @IsNumber()
+  expiryDate: number;
+
+  @IsUrl()
+  applicationLink: string;
+
+  @IsString()
+  guid: string;
 }

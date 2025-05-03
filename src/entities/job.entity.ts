@@ -4,10 +4,7 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToOne,
-  JoinColumn,
 } from 'typeorm';
-import { Category } from './category.entity';
 
 @Entity('jobs')
 export class Job {
@@ -15,17 +12,55 @@ export class Job {
   id: number;
 
   @Column()
-  name: string;
+  title: string;
+
+  @Column('text')
+  excerpt: string;
 
   @Column()
-  category_id: number;
+  companyName: string;
+
+  @Column()
+  companyLogo: string;
+
+  @Column()
+  employmentType: string;
+
+  @Column({ nullable: true })
+  minSalary: number;
+
+  @Column({ nullable: true })
+  maxSalary: number;
 
   @Column('simple-array')
-  tags: string[];
+  seniority: string[];
 
-  @ManyToOne(() => Category)
-  @JoinColumn({ name: 'category_id' })
-  category: Category;
+  @Column('simple-array')
+  locationRestrictions: string[];
+
+  @Column('simple-array')
+  timezoneRestrictions: number[];
+
+  @Column('simple-array')
+  categories: string[];
+
+  @Column('simple-array')
+  parentCategories: string[];
+
+  @Column('text')
+  description: string;
+
+  @Column()
+  pubDate: number;
+
+  @Column()
+  expiryDate: number;
+
+  @Column()
+  applicationLink: string;
+
+  @Column()
+  guid: string;
 
   @CreateDateColumn()
   created_at: Date;
