@@ -7,6 +7,8 @@ import {
   Param,
   Delete,
   Query,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { QuizzesService } from './quizzes.service';
 import { CreateQuizDto } from './dto/create-quiz.dto';
@@ -17,6 +19,7 @@ import {
 } from './dto/add-questions.dto';
 import { BulkCreateQuizDto } from './dto/bulk-create-quiz.dto';
 import { MatchQuestionsDto } from './dto/match-questions.dto';
+import { QuizResponseDto } from './dto/quiz-response.dto';
 import { ApiResponse } from '../common/interfaces/api-response.interface';
 import { Quiz, QuizType } from '../entities/quiz.entity';
 import { Question } from '../entities/question.entity';
@@ -33,13 +36,14 @@ interface SanitizedQuiz {
 }
 
 @Controller('quizzes')
+@UseInterceptors(ClassSerializerInterceptor)
 export class QuizzesController {
   constructor(private readonly quizzesService: QuizzesService) {}
 
   @Post()
   async create(
     @Body() createQuizDto: CreateQuizDto,
-  ): Promise<ApiResponse<Quiz>> {
+  ): Promise<ApiResponse<QuizResponseDto>> {
     const data = await this.quizzesService.create(createQuizDto);
     return {
       data,
@@ -51,7 +55,7 @@ export class QuizzesController {
   @Post('bulk')
   async bulkCreate(
     @Body() bulkCreateQuizDto: BulkCreateQuizDto,
-  ): Promise<ApiResponse<Quiz[]>> {
+  ): Promise<ApiResponse<QuizResponseDto[]>> {
     const data = await this.quizzesService.bulkCreate(bulkCreateQuizDto);
     return {
       data,
@@ -61,7 +65,7 @@ export class QuizzesController {
   }
 
   @Get()
-  async findAll(): Promise<ApiResponse<SanitizedQuiz[]>> {
+  async findAll(): Promise<ApiResponse<QuizResponseDto[]>> {
     const data = await this.quizzesService.findAll();
     return {
       data,
@@ -71,7 +75,7 @@ export class QuizzesController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<ApiResponse<SanitizedQuiz>> {
+  async findOne(@Param('id') id: string): Promise<ApiResponse<QuizResponseDto>> {
     const data = await this.quizzesService.findOne(+id);
     return {
       data,
@@ -84,7 +88,7 @@ export class QuizzesController {
   async update(
     @Param('id') id: string,
     @Body() updateQuizDto: UpdateQuizDto,
-  ): Promise<ApiResponse<Quiz>> {
+  ): Promise<ApiResponse<QuizResponseDto>> {
     const data = await this.quizzesService.update(+id, updateQuizDto);
     return {
       data,
@@ -109,43 +113,43 @@ export class QuizzesController {
   async addQuestions(
     @Param('id') id: string,
     @Body() addQuestionsDto: AddQuestionsDto,
-  ): Promise<ApiResponse<Quiz>> {
+  ): Promise<ApiResponse<QuizResponseDto>> {
     const data = await this.quizzesService.addQuestions(+id, addQuestionsDto);
     return {
       data,
-      message: 'Questions added to quiz successfully',
+      message: 'Questions added successfully',
       status: 200,
     };
   }
 
-  @Post(':id/questions-by-type')
+  @Post(':id/questions/type')
   async addQuestionsByType(
     @Param('id') id: string,
     @Body() addQuestionsByTypeDto: AddQuestionsByTypeDto,
-  ): Promise<ApiResponse<Quiz>> {
+  ): Promise<ApiResponse<QuizResponseDto>> {
     const data = await this.quizzesService.addQuestionsByType(
       +id,
       addQuestionsByTypeDto,
     );
     return {
       data,
-      message: 'Questions added to quiz by type successfully',
+      message: 'Questions added successfully',
       status: 200,
     };
   }
 
-  @Post(':id/match-questions')
+  @Post(':id/questions/match')
   async matchQuestions(
     @Param('id') id: string,
     @Body() matchQuestionsDto: MatchQuestionsDto,
-  ): Promise<ApiResponse<Quiz>> {
-    const quiz = await this.quizzesService.matchQuestionsToQuiz(
+  ): Promise<ApiResponse<QuizResponseDto>> {
+    const data = await this.quizzesService.matchQuestions(
       +id,
-      matchQuestionsDto.question_ids,
+      matchQuestionsDto,
     );
     return {
-      data: quiz,
-      message: 'Questions matched to quiz successfully',
+      data,
+      message: 'Questions matched successfully',
       status: 200,
     };
   }
@@ -154,9 +158,9 @@ export class QuizzesController {
   async getQuestionsByQuizId(
     @Param('id') id: string,
   ): Promise<ApiResponse<Question[]>> {
-    const questions = await this.quizzesService.getQuestionsByQuizId(+id);
+    const data = await this.quizzesService.getQuestionsByQuizId(+id);
     return {
-      data: questions,
+      data,
       message: 'Questions retrieved successfully',
       status: 200,
     };
@@ -165,12 +169,11 @@ export class QuizzesController {
   @Get('type/:type')
   async findByType(
     @Param('type') type: string,
-  ): Promise<ApiResponse<SanitizedQuiz[]>> {
-    const quizType = type as QuizType;
-    const data = await this.quizzesService.findByType(quizType);
+  ): Promise<ApiResponse<QuizResponseDto[]>> {
+    const data = await this.quizzesService.findByType(type as QuizType);
     return {
       data,
-      message: 'Quizzes retrieved by type successfully',
+      message: 'Quizzes retrieved successfully',
       status: 200,
     };
   }

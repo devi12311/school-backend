@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ArticlesService } from './articles.service';
 import { ArticlesController } from './articles.controller';
@@ -6,7 +6,7 @@ import { Article } from '../entities/article.entity';
 import { GorseModule } from '../gorse/gorse.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Article]), GorseModule],
+  imports: [TypeOrmModule.forFeature([Article]), forwardRef(() => GorseModule)],
   controllers: [ArticlesController],
   providers: [ArticlesService],
   exports: [ArticlesService],

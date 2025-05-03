@@ -7,24 +7,28 @@ import {
   Param,
   Delete,
   UseGuards,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { QuestionsService } from './questions.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import { BulkCreateQuestionDto } from './dto/bulk-create-question.dto';
+import { QuestionResponseDto } from './dto/question-response.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ApiResponse } from '../common/interfaces/api-response.interface';
 import { Question } from '../entities/question.entity';
 
 @Controller('questions')
 @UseGuards(JwtAuthGuard)
+@UseInterceptors(ClassSerializerInterceptor)
 export class QuestionsController {
   constructor(private readonly questionsService: QuestionsService) {}
 
   @Post()
   async create(
     @Body() createQuestionDto: CreateQuestionDto,
-  ): Promise<ApiResponse<Question>> {
+  ): Promise<ApiResponse<QuestionResponseDto>> {
     const data = await this.questionsService.create(createQuestionDto);
     return {
       data,
@@ -36,7 +40,7 @@ export class QuestionsController {
   @Post('bulk')
   async bulkCreate(
     @Body() bulkCreateQuestionDto: BulkCreateQuestionDto,
-  ): Promise<ApiResponse<Question[]>> {
+  ): Promise<ApiResponse<QuestionResponseDto[]>> {
     const data = await this.questionsService.bulkCreate(bulkCreateQuestionDto);
     return {
       data,
@@ -46,7 +50,7 @@ export class QuestionsController {
   }
 
   @Get()
-  async findAll(): Promise<ApiResponse<Question[]>> {
+  async findAll(): Promise<ApiResponse<QuestionResponseDto[]>> {
     const data = await this.questionsService.findAll();
     return {
       data,
@@ -56,7 +60,7 @@ export class QuestionsController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<ApiResponse<Question>> {
+  async findOne(@Param('id') id: string): Promise<ApiResponse<QuestionResponseDto>> {
     const data = await this.questionsService.findOne(+id);
     return {
       data,
@@ -69,7 +73,7 @@ export class QuestionsController {
   async update(
     @Param('id') id: string,
     @Body() updateQuestionDto: UpdateQuestionDto,
-  ): Promise<ApiResponse<Question>> {
+  ): Promise<ApiResponse<QuestionResponseDto>> {
     const data = await this.questionsService.update(+id, updateQuestionDto);
     return {
       data,

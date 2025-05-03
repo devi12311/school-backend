@@ -1,6 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { Article } from '../entities/article.entity';
 import { CreateArticleDto } from './dto/create-article-dto';
 import { BulkCreateArticleDto } from './dto/bulk-create-article.dto';
@@ -11,6 +16,7 @@ export class ArticlesService {
   constructor(
     @InjectRepository(Article)
     private articlesRepository: Repository<Article>,
+    @Inject(forwardRef(() => GorseService))
     private gorseService: GorseService,
   ) {}
 
@@ -69,5 +75,11 @@ export class ArticlesService {
       throw new NotFoundException(`Article with ID ${id} not found`);
     }
     return article;
+  }
+
+  async findMany(ids: number[]): Promise<Article[]> {
+    return this.articlesRepository.find({
+      where: { id: In(ids) },
+    });
   }
 }

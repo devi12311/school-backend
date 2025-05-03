@@ -7,24 +7,28 @@ import {
   Param,
   Delete,
   UseGuards,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { UniversitiesService } from './universities.service';
 import { CreateUniversityDto } from './dto/create-university.dto';
 import { UpdateUniversityDto } from './dto/update-university.dto';
 import { BulkCreateUniversityDto } from './dto/bulk-create-university.dto';
+import { UniversityResponseDto } from './dto/university-response.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ApiResponse } from '../common/interfaces/api-response.interface';
 import { University } from '../entities/university.entity';
 
 @Controller('universities')
 @UseGuards(JwtAuthGuard)
+@UseInterceptors(ClassSerializerInterceptor)
 export class UniversitiesController {
   constructor(private readonly universitiesService: UniversitiesService) {}
 
   @Post()
   async create(
     @Body() createUniversityDto: CreateUniversityDto,
-  ): Promise<ApiResponse<University>> {
+  ): Promise<ApiResponse<UniversityResponseDto>> {
     const data = await this.universitiesService.create(createUniversityDto);
     return {
       data,
@@ -36,7 +40,7 @@ export class UniversitiesController {
   @Post('bulk')
   async bulkCreate(
     @Body() bulkCreateUniversityDto: BulkCreateUniversityDto,
-  ): Promise<ApiResponse<University[]>> {
+  ): Promise<ApiResponse<UniversityResponseDto[]>> {
     const data = await this.universitiesService.bulkCreate(
       bulkCreateUniversityDto,
     );
@@ -48,7 +52,7 @@ export class UniversitiesController {
   }
 
   @Get()
-  async findAll(): Promise<ApiResponse<University[]>> {
+  async findAll(): Promise<ApiResponse<UniversityResponseDto[]>> {
     const data = await this.universitiesService.findAll();
     return {
       data,
@@ -58,7 +62,7 @@ export class UniversitiesController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<ApiResponse<University>> {
+  async findOne(@Param('id') id: string): Promise<ApiResponse<UniversityResponseDto>> {
     const data = await this.universitiesService.findOne(+id);
     return {
       data,
@@ -71,7 +75,7 @@ export class UniversitiesController {
   async update(
     @Param('id') id: string,
     @Body() updateUniversityDto: UpdateUniversityDto,
-  ): Promise<ApiResponse<University>> {
+  ): Promise<ApiResponse<UniversityResponseDto>> {
     const data = await this.universitiesService.update(
       +id,
       updateUniversityDto,

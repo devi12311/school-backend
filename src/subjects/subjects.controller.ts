@@ -7,24 +7,28 @@ import {
   Param,
   Delete,
   UseGuards,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { SubjectsService } from './subjects.service';
 import { CreateSubjectDto } from './dto/create-subject.dto';
 import { UpdateSubjectDto } from './dto/update-subject.dto';
 import { BulkCreateSubjectDto } from './dto/bulk-create-subject.dto';
+import { SubjectResponseDto } from './dto/subject-response.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ApiResponse } from '../common/interfaces/api-response.interface';
 import { Subject } from '../entities/subject.entity';
 
 @Controller('subjects')
 @UseGuards(JwtAuthGuard)
+@UseInterceptors(ClassSerializerInterceptor)
 export class SubjectsController {
   constructor(private readonly subjectsService: SubjectsService) {}
 
   @Post()
   async create(
     @Body() createSubjectDto: CreateSubjectDto,
-  ): Promise<ApiResponse<Subject>> {
+  ): Promise<ApiResponse<SubjectResponseDto>> {
     const data = await this.subjectsService.create(createSubjectDto);
     return {
       data,
@@ -36,7 +40,7 @@ export class SubjectsController {
   @Post('bulk')
   async bulkCreate(
     @Body() bulkCreateSubjectDto: BulkCreateSubjectDto,
-  ): Promise<ApiResponse<Subject[]>> {
+  ): Promise<ApiResponse<SubjectResponseDto[]>> {
     const data = await this.subjectsService.bulkCreate(bulkCreateSubjectDto);
     return {
       data,
@@ -46,7 +50,7 @@ export class SubjectsController {
   }
 
   @Get()
-  async findAll(): Promise<ApiResponse<Subject[]>> {
+  async findAll(): Promise<ApiResponse<SubjectResponseDto[]>> {
     const data = await this.subjectsService.findAll();
     return {
       data,
@@ -56,7 +60,7 @@ export class SubjectsController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<ApiResponse<Subject>> {
+  async findOne(@Param('id') id: string): Promise<ApiResponse<SubjectResponseDto>> {
     const data = await this.subjectsService.findOne(+id);
     return {
       data,
@@ -69,7 +73,7 @@ export class SubjectsController {
   async update(
     @Param('id') id: string,
     @Body() updateSubjectDto: UpdateSubjectDto,
-  ): Promise<ApiResponse<Subject>> {
+  ): Promise<ApiResponse<SubjectResponseDto>> {
     const data = await this.subjectsService.update(+id, updateSubjectDto);
     return {
       data,

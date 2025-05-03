@@ -13,8 +13,29 @@ export class University {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ nullable: true })
   name: string;
+
+  @Column({ nullable: true })
+  description: string;
+
+  @Column({ nullable: true })
+  location: string;
+
+  @Column({ nullable: true })
+  website: string;
+
+  @Column({ nullable: true })
+  ranking: string;
+
+  @Column({ nullable: true })
+  acceptance_rate: string;
+
+  @Column({ nullable: true })
+  logo: string;
+
+  @Column({ nullable: true })
+  banner: string;
 
   @OneToMany(() => Major, (major) => major.university)
   majors: Major[];

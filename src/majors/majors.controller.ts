@@ -8,10 +8,13 @@ import {
   Delete,
   UseGuards,
   Request,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { MajorsService } from './majors.service';
 import { CreateMajorDto } from './dto/create-major.dto';
 import { UpdateMajorDto } from './dto/update-major.dto';
+import { MajorResponseDto } from './dto/major-response.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ApiResponse } from '../common/interfaces/api-response.interface';
 import { Major } from '../entities/major.entity';
@@ -19,13 +22,14 @@ import { BulkCreateMajorDto } from './dto/bulk-create-major.dto';
 
 @Controller('majors')
 @UseGuards(JwtAuthGuard)
+@UseInterceptors(ClassSerializerInterceptor)
 export class MajorsController {
   constructor(private readonly majorsService: MajorsService) {}
 
   @Post()
   async create(
     @Body() createMajorDto: CreateMajorDto,
-  ): Promise<ApiResponse<Major>> {
+  ): Promise<ApiResponse<MajorResponseDto>> {
     const data = await this.majorsService.create(createMajorDto);
     return {
       data,
@@ -37,7 +41,7 @@ export class MajorsController {
   @Post('bulk')
   async bulkCreate(
     @Body() bulkCreateMajorDto: BulkCreateMajorDto,
-  ): Promise<ApiResponse<Major[]>> {
+  ): Promise<ApiResponse<MajorResponseDto[]>> {
     const data = await this.majorsService.bulkCreate(bulkCreateMajorDto);
     return {
       data,
@@ -47,7 +51,7 @@ export class MajorsController {
   }
 
   @Get()
-  async findAll(): Promise<ApiResponse<Major[]>> {
+  async findAll(): Promise<ApiResponse<MajorResponseDto[]>> {
     const data = await this.majorsService.findAll();
     return {
       data,
@@ -60,7 +64,7 @@ export class MajorsController {
   async getRecommended(
     @Request() req,
     @Param('n') n: number = 10,
-  ): Promise<ApiResponse<Major[]>> {
+  ): Promise<ApiResponse<MajorResponseDto[]>> {
     const data = await this.majorsService.getRecommendedMajors(
       req.user.userId,
       n,
@@ -91,7 +95,7 @@ export class MajorsController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<ApiResponse<Major>> {
+  async findOne(@Param('id') id: string): Promise<ApiResponse<MajorResponseDto>> {
     const data = await this.majorsService.findOne(+id);
     return {
       data,
@@ -104,7 +108,7 @@ export class MajorsController {
   async update(
     @Param('id') id: string,
     @Body() updateMajorDto: UpdateMajorDto,
-  ): Promise<ApiResponse<Major>> {
+  ): Promise<ApiResponse<MajorResponseDto>> {
     const data = await this.majorsService.update(+id, updateMajorDto);
     return {
       data,

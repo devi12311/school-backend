@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  Inject,
+  forwardRef,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { Major } from '../entities/major.entity';
@@ -17,6 +22,7 @@ export class MajorsService {
   constructor(
     @InjectRepository(Major)
     private majorsRepository: Repository<Major>,
+    @Inject(forwardRef(() => GorseService))
     private gorseService: GorseService,
   ) {}
 
@@ -129,6 +135,13 @@ export class MajorsService {
       UserId: userId,
       ItemId: `major:${majorId}`,
       Timestamp: new Date().toISOString(),
+    });
+  }
+
+  async findMany(ids: number[]): Promise<Major[]> {
+    return this.majorsRepository.find({
+      where: { id: In(ids) },
+      relations: ['category', 'subjects'],
     });
   }
 }

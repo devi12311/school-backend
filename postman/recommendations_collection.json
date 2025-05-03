@@ -1,0 +1,79 @@
+{
+	"info": {
+		"_postman_id": "recommendations-collection",
+		"name": "School Backend Recommendations",
+		"description": "Collection for testing recommendation endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Major Recommendations",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/recommendations/majors/{{user_id}}?limit=10",
+					"host": ["{{base_url}}"],
+					"path": ["recommendations", "majors", "{{user_id}}"],
+					"query": [
+						{
+							"key": "limit",
+							"value": "10"
+						}
+					]
+				},
+				"description": "Get recommended majors for a user"
+			}
+		},
+		{
+			"name": "Subject Recommendations",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/recommendations/subjects/{{user_id}}?limit=10",
+					"host": ["{{base_url}}"],
+					"path": ["recommendations", "subjects", "{{user_id}}"],
+					"query": [
+						{
+							"key": "limit",
+							"value": "10"
+						}
+					]
+				},
+				"description": "Get recommended subjects for a user"
+			}
+		},
+		{
+			"name": "Article Recommendations",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/recommendations/articles/{{user_id}}?limit=10",
+					"host": ["{{base_url}}"],
+					"path": ["recommendations", "articles", "{{user_id}}"],
+					"query": [
+						{
+							"key": "limit",
+							"value": "10"
+						}
+					]
+				},
+				"description": "Get recommended articles for a user"
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "user123",
+			"type": "string"
+		}
+	]
+} 
