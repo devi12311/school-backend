@@ -4,7 +4,10 @@ import { Repository } from 'typeorm';
 import { Quiz } from '../entities/quiz.entity';
 import { CreateQuizDto } from './dto/create-quiz.dto';
 import { UpdateQuizDto } from './dto/update-quiz.dto';
-import { AddQuestionsDto } from './dto/add-questions.dto';
+import {
+  AddQuestionsByTypeDto,
+  AddQuestionsDto,
+} from './dto/add-questions.dto';
 import { QuizQuestion } from '../entities/quiz-question.entity';
 import { BulkCreateQuizDto } from './dto/bulk-create-quiz.dto';
 import { Question } from '../entities/question.entity';
@@ -16,6 +19,8 @@ export class QuizzesService {
     private quizzesRepository: Repository<Quiz>,
     @InjectRepository(QuizQuestion)
     private quizQuestionsRepository: Repository<QuizQuestion>,
+    @InjectRepository(Question)
+    private questionRepository: Repository<Question>,
   ) {}
 
   async create(createQuizDto: CreateQuizDto): Promise<Quiz> {
@@ -109,5 +114,30 @@ export class QuizzesService {
     });
 
     return quizQuestions.map((qq) => qq.question);
+  }
+
+  async addQuestionsByType(
+    id: number,
+    addQuestionsByTypeDto: AddQuestionsByTypeDto,
+  ): Promise<Quiz> {
+    const quiz = await this.findOne(id);
+    const { type } = addQuestionsByTypeDto;
+
+    // Get all questions of the specified type
+    const questionsOfType = await this.questionRepository.find({
+      where: { type },
+    });
+
+    // Create quiz-question relationships with sequential order
+    const quizQuestions = questionsOfType.map((question, index) =>
+      this.quizQuestionsRepository.create({
+        quiz_id: id,
+        question_id: question.id,
+        question_order: index + 1,
+      }),
+    );
+
+    await this.quizQuestionsRepository.save(quizQuestions);
+    return this.findOne(id);
   }
 }

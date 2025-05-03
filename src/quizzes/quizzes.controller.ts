@@ -11,7 +11,10 @@ import {
 import { QuizzesService } from './quizzes.service';
 import { CreateQuizDto } from './dto/create-quiz.dto';
 import { UpdateQuizDto } from './dto/update-quiz.dto';
-import { AddQuestionsDto } from './dto/add-questions.dto';
+import {
+  AddQuestionsDto,
+  AddQuestionsByTypeDto,
+} from './dto/add-questions.dto';
 import { BulkCreateQuizDto } from './dto/bulk-create-quiz.dto';
 import { MatchQuestionsDto } from './dto/match-questions.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -102,6 +105,22 @@ export class QuizzesController {
     return {
       data,
       message: 'Questions added to quiz successfully',
+      status: 200,
+    };
+  }
+
+  @Post(':id/questions-by-type')
+  async addQuestionsByType(
+    @Param('id') id: string,
+    @Body() addQuestionsByTypeDto: AddQuestionsByTypeDto,
+  ): Promise<ApiResponse<Quiz>> {
+    const data = await this.quizzesService.addQuestionsByType(
+      +id,
+      addQuestionsByTypeDto,
+    );
+    return {
+      data,
+      message: 'Questions added to quiz by type successfully',
       status: 200,
     };
   }

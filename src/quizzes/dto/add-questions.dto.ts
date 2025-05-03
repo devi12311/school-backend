@@ -1,4 +1,4 @@
-import { IsNumber, IsArray, ValidateNested } from 'class-validator';
+import { IsNumber, IsArray, ValidateNested, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 
 class QuestionOrderDto {
@@ -14,4 +14,9 @@ export class AddQuestionsDto {
   @ValidateNested({ each: true })
   @Type(() => QuestionOrderDto)
   questions: QuestionOrderDto[];
-} 
+}
+
+export class AddQuestionsByTypeDto {
+  @IsString()
+  type: string;
+}

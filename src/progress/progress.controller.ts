@@ -43,7 +43,10 @@ export class ProgressController {
     @Request() req,
     @Body() updateProgressDto: UpdateProgressDto,
   ): Promise<ApiResponse<Progress>> {
-    const data = await this.progressService.update(req.user.id, updateProgressDto);
+    const data = await this.progressService.update(
+      req.user.id,
+      updateProgressDto,
+    );
     return {
       data,
       message: 'Progress updated successfully',
@@ -56,11 +59,14 @@ export class ProgressController {
     @Request() req,
     @Param('quizId') quizId: string,
   ): Promise<ApiResponse<any>> {
-    const data = await this.progressService.getQuizProgress(req.user.id, +quizId);
+    const data = await this.progressService.getQuizProgress(
+      req.user.id,
+      +quizId,
+    );
     return {
       data,
       message: 'Quiz progress retrieved successfully',
       status: 200,
     };
   }
-} 
+}

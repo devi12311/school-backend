@@ -25,4 +25,4 @@ export class UpdateQuestionDto {
   @Type(() => AnswerDto)
   @IsOptional()
   answer?: AnswerDto;
-} 
+}
