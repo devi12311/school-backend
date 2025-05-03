@@ -24,14 +24,19 @@ export class ProgressService {
       where: { user_id: userId },
     });
     if (!progress) {
-      throw new NotFoundException(`Progress for user with ID ${userId} not found`);
+      throw new NotFoundException(
+        `Progress for user with ID ${userId} not found`,
+      );
     }
     return progress;
   }
 
-  async update(userId: number, updateProgressDto: UpdateProgressDto): Promise<Progress> {
+  async update(
+    userId: number,
+    updateProgressDto: UpdateProgressDto,
+  ): Promise<Progress> {
     const progress = await this.findOne(userId);
-    
+
     progress.quiz_progress = {
       ...progress.quiz_progress,
       [updateProgressDto.quiz_id]: {
@@ -45,7 +50,10 @@ export class ProgressService {
     return this.progressRepository.save(progress);
   }
 
-  async getQuizProgress(userId: number, quizId: number): Promise<{
+  async getQuizProgress(
+    userId: number,
+    quizId: number,
+  ): Promise<{
     progress: number;
     answered_questions: number[];
     time_spent: number;
@@ -54,4 +62,4 @@ export class ProgressService {
     const progress = await this.findOne(userId);
     return progress.quiz_progress[quizId] || null;
   }
-} 
+}

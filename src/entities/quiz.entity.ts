@@ -17,6 +17,7 @@ export enum QuizType {
   IMAGINATION = 'imagination',
   SOCIAL_SKILLS = 'social_skills',
   ANALYTICAL_SKILLS = 'analytical_skills',
+  EVALUATION = 'evaluation',
 }
 
 @Entity('quizzes')

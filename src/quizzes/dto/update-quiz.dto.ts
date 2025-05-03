@@ -8,4 +8,4 @@ export class UpdateQuizDto {
   @IsString()
   @IsOptional()
   description?: string;
-} 
+}

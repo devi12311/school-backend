@@ -7,4 +7,4 @@ export class BulkCreateQuestionDto {
   @ValidateNested({ each: true })
   @Type(() => CreateQuestionDto)
   questions: CreateQuestionDto[];
-} 
+}

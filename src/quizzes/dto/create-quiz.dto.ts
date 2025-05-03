@@ -8,4 +8,4 @@ export class CreateQuizDto {
   @IsString()
   @IsNotEmpty()
   description: string;
-} 
+}

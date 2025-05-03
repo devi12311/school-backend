@@ -16,4 +16,4 @@ export class UpdateProgressDto {
 
   @IsDate()
   last_updated: Date;
-} 
+}

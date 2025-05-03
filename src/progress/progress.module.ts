@@ -10,4 +10,4 @@ import { Progress } from '../entities/progress.entity';
   providers: [ProgressService],
   exports: [ProgressService],
 })
-export class ProgressModule {} 
+export class ProgressModule {}

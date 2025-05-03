@@ -1,4 +1,10 @@
-import { IsString, IsNotEmpty, IsArray, IsOptional, ValidateNested } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsArray,
+  IsOptional,
+  ValidateNested,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 class AnswerDto {
@@ -24,4 +30,4 @@ export class CreateQuestionDto {
   @ValidateNested()
   @Type(() => AnswerDto)
   answer: AnswerDto;
-} 
+}
