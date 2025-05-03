@@ -25,13 +25,15 @@ export class QuizzesController {
   constructor(private readonly quizzesService: QuizzesService) {}
 
   @Post()
-  async create(@Body() createQuizDto: CreateQuizDto): Promise<ApiResponse<Quiz>> {
+  async create(
+    @Body() createQuizDto: CreateQuizDto,
+  ): Promise<ApiResponse<Quiz>> {
     const data = await this.quizzesService.create(createQuizDto);
     return {
       data,
       message: 'Quiz created successfully',
       status: 201,
-    };  
+    };
   }
 
   @Post('bulk')
@@ -131,4 +133,4 @@ export class QuizzesController {
       status: 200,
     };
   }
-} 
+}

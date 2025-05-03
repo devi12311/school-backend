@@ -63,7 +63,7 @@ export class QuizzesService {
     const quiz = await this.findOne(id);
 
     // Remove existing questions
-    await this.quizQuestionsRepository.delete({ quiz_id: id });
+    // await this.quizQuestionsRepository.delete({ quiz_id: id });
 
     // Add new questions with their order
     const quizQuestions = addQuestionsDto.questions.map((q) =>
