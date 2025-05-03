@@ -1,6 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Job } from '../entities/job.entity';
 import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
@@ -12,6 +12,7 @@ export class JobsService {
   constructor(
     @InjectRepository(Job)
     private jobsRepository: Repository<Job>,
+    @Inject(forwardRef(() => GorseService))
     private gorseService: GorseService,
   ) {}
 
@@ -77,5 +78,11 @@ export class JobsService {
   async remove(id: number): Promise<void> {
     const job = await this.findOne(id);
     await this.jobsRepository.remove(job);
+  }
+
+  async findMany(ids: number[]): Promise<Job[]> {
+    return this.jobsRepository.find({
+      where: { id: In(ids) },
+    });
   }
 }

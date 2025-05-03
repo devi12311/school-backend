@@ -28,4 +28,12 @@ export class RecommendationsController {
   ) {
     return this.gorseService.getArticleRecommendations(userId, limit);
   }
+
+  @Get('jobs/:userId')
+  async getJobRecommendations(
+    @Param('userId') userId: string,
+    @Query('limit') limit: number = 10,
+  ) {
+    return this.gorseService.getJobRecommendation(userId, limit);
+  }
 }

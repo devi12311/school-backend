@@ -4,11 +4,12 @@ import { ConfigService } from '@nestjs/config';
 import { MajorsService } from '../majors/majors.service';
 import { SubjectsService } from '../subjects/subjects.service';
 import { ArticlesService } from '../articles/articles.service';
-import { MajorRecommendationDto } from './dto/major-recommendation.dto';
 import { SubjectRecommendationDto } from './dto/subject-recommendation.dto';
 import { ArticleRecommendationDto } from './dto/article-recommendation.dto';
 import { Major } from '../entities/major.entity';
 import { MajorResponseDto } from '../majors/dto/major-response.dto';
+import { JobsService } from '../jobs/jobs.service';
+import { Job } from '../entities/job.entity';
 
 @Injectable()
 export class GorseService {
@@ -22,6 +23,8 @@ export class GorseService {
     private subjectsService: SubjectsService,
     @Inject(forwardRef(() => ArticlesService))
     private articlesService: ArticlesService,
+    @Inject(forwardRef(() => JobsService))
+    private jobsService: JobsService,
   ) {
     this.client = new Gorse({
       endpoint: this.configService.get(
@@ -89,10 +92,10 @@ export class GorseService {
       location: any;
       ranking: any;
       tuition: any;
-      email: any
+      email: any;
     }[];
     updated_at: Date;
-    created_at: Date
+    created_at: Date;
   }> {
     const response = await this.client.getRecommend({
       userId,
@@ -210,6 +213,19 @@ export class GorseService {
       name: article.name,
       url: article.url,
     }));
+  }
+
+  async getJobRecommendation(userId: string, n: number = 10): Promise<Job[]> {
+    const response = await this.client.getRecommend({
+      userId,
+      cursorOptions: { n },
+      category: '3',
+    });
+    if (!response || !Array.isArray(response)) {
+      return [];
+    }
+    const ids = this.parseIds(response);
+    return await this.jobsService.findMany(ids);
   }
 
   async insertItem(item: {
