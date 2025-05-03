@@ -22,7 +22,7 @@ export class AuthService {
     return null;
   }
 
-  async login(user: any) {
+  async login(user: User) {
     const payload = { email: user.email, sub: user.id };
     return {
       access_token: this.jwtService.sign(payload),
@@ -38,7 +38,7 @@ export class AuthService {
       throw new UnauthorizedException('Email already exists');
     }
 
-    const hashedPassword = await bcrypt.hash(userData.password, 10);
+    const hashedPassword = await bcrypt.hash(userData.password as string, 10);
     const user = this.usersRepository.create({
       ...userData,
       password: hashedPassword,

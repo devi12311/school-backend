@@ -19,6 +19,9 @@ export class Question {
   @Column('text', { nullable: true })
   imageUrl?: string;
 
+  @Column('text')
+  type: string;
+
   @Column('jsonb')
   properties: {
     answers: { answer: string; tags: string[] }[];
