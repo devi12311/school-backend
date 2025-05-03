@@ -11,6 +11,7 @@ import {
 import { QuizQuestion } from '../entities/quiz-question.entity';
 import { BulkCreateQuizDto } from './dto/bulk-create-quiz.dto';
 import { Question } from '../entities/question.entity';
+import { QuizType } from '../entities/quiz.entity';
 
 interface SanitizedQuiz {
   title: string;
@@ -64,7 +65,15 @@ export class QuizzesService {
     const quizzes = await this.quizzesRepository.find({
       relations: ['quizQuestions', 'quizQuestions.question'],
     });
-    return quizzes.map((quiz) => this.sanitizeQuiz(quiz));
+    return quizzes.map(quiz => this.sanitizeQuiz(quiz));
+  }
+
+  async findByType(type: QuizType): Promise<SanitizedQuiz[]> {
+    const quizzes = await this.quizzesRepository.find({
+      where: { type },
+      relations: ['quizQuestions', 'quizQuestions.question'],
+    });
+    return quizzes.map(quiz => this.sanitizeQuiz(quiz));
   }
 
   async findOne(id: number): Promise<SanitizedQuiz> {

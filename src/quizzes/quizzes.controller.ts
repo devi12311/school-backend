@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { QuizzesService } from './quizzes.service';
 import { CreateQuizDto } from './dto/create-quiz.dto';
@@ -17,7 +18,7 @@ import {
 import { BulkCreateQuizDto } from './dto/bulk-create-quiz.dto';
 import { MatchQuestionsDto } from './dto/match-questions.dto';
 import { ApiResponse } from '../common/interfaces/api-response.interface';
-import { Quiz } from '../entities/quiz.entity';
+import { Quiz, QuizType } from '../entities/quiz.entity';
 import { Question } from '../entities/question.entity';
 
 interface SanitizedQuiz {
@@ -157,6 +158,17 @@ export class QuizzesController {
     return {
       data: questions,
       message: 'Questions retrieved successfully',
+      status: 200,
+    };
+  }
+
+  @Get('type/:type')
+  async findByType(@Param('type') type: string): Promise<ApiResponse<SanitizedQuiz[]>> {
+    const quizType = type as QuizType;
+    const data = await this.quizzesService.findByType(quizType);
+    return {
+      data,
+      message: 'Quizzes retrieved by type successfully',
       status: 200,
     };
   }
