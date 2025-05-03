@@ -1,16 +1,6 @@
-import {
-  Controller,
-  Post,
-  Body,
-  UnauthorizedException,
-  Put,
-  Get,
-  UseGuards,
-  Request,
-} from '@nestjs/common';
+import { Controller, Post, Body, UnauthorizedException, Put } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { User } from '../entities/user.entity';
-import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -36,11 +26,5 @@ export class AuthController {
   @Put('me')
   async updateProfile(@Body() signupDto: Partial<User>) {
     return this.authService.updateProfile(signupDto);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('me')
-  async getProfile(@Request() req) {
-    return this.authService.getUserById(req.user.email);
   }
 }

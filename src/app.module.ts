@@ -24,6 +24,7 @@ import { JobsModule } from './jobs/jobs.module';
 import { QuizzesModule } from './quizzes/quizzes.module';
 import { QuestionsModule } from './questions/questions.module';
 import { ProgressModule } from './progress/progress.module';
+import { GorseModule } from './gorse/gorse.module';
 
 @Module({
   imports: [
@@ -72,6 +73,7 @@ import { ProgressModule } from './progress/progress.module';
       }),
       inject: [ConfigService],
     }),
+    GorseModule,
     AuthModule,
     CategoriesModule,
     MajorsModule,

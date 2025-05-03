@@ -5,10 +5,7 @@ import { MajorsController } from './majors.controller';
 import { Major } from '../entities/major.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Major]),
-    TypeOrmModule.forFeature([Major], 'gorse'),
-  ],
+  imports: [TypeOrmModule.forFeature([Major])],
   controllers: [MajorsController],
   providers: [MajorsService],
   exports: [MajorsService],

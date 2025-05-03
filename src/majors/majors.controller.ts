@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { MajorsService } from './majors.service';
 import { CreateMajorDto } from './dto/create-major.dto';
@@ -51,6 +52,33 @@ export class MajorsController {
     return {
       data,
       message: 'Majors retrieved successfully',
+      status: 200,
+    };
+  }
+
+  @Get('recommended')
+  async getRecommended(
+    @Request() req,
+    @Param('n') n: number = 10,
+  ): Promise<ApiResponse<Major[]>> {
+    const data = await this.majorsService.getRecommendedMajors(req.user.userId, n);
+    return {
+      data,
+      message: 'Recommended majors retrieved successfully',
+      status: 200,
+    };
+  }
+
+  @Post(':id/feedback')
+  async addFeedback(
+    @Request() req,
+    @Param('id') id: string,
+    @Body('feedbackType') feedbackType: string = 'star',
+  ): Promise<ApiResponse<void>> {
+    await this.majorsService.addMajorFeedback(req.user.userId, +id, feedbackType);
+    return {
+      data: undefined,
+      message: 'Feedback added successfully',
       status: 200,
     };
   }

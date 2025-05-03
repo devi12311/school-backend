@@ -78,17 +78,4 @@ export class AuthService {
     const { password, ...result } = updatedUser;
     return result;
   }
-
-  async getUserById(email: string) {
-    const user = await this.usersRepository.findOne({
-      where: { email },
-    });
-
-    if (!user) {
-      throw new UnauthorizedException('User not found');
-    }
-
-    const { password, ...result } = user;
-    return result;
-  }
 }
