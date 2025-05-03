@@ -1,9 +1,7 @@
 import { Exclude } from 'class-transformer';
 
 class SubjectResponseDto {
-  id: number;
   name: string;
-  tags: string[];
 }
 
 class UniversityResponseDto {
@@ -16,6 +14,9 @@ export class MajorResponseDto {
   id: number;
   name: string;
   tags: string[];
+  duration: string;
+  job_placement_rate: string;
+  average_salary: string;
   university: UniversityResponseDto;
   subjects: SubjectResponseDto[];
 
@@ -24,4 +25,4 @@ export class MajorResponseDto {
 
   @Exclude()
   updated_at: Date;
-} 
+}

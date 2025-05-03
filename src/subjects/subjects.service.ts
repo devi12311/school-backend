@@ -27,7 +27,7 @@ export class SubjectsService {
       throw new Error('Subject must have a major');
     }
     if (!subject.major.university) {
-      throw new Error('Subject\'s major must have a university');
+      throw new Error("Subject's major must have a university");
     }
 
     return {
@@ -48,7 +48,9 @@ export class SubjectsService {
     };
   }
 
-  async create(createSubjectDto: CreateSubjectDto): Promise<SubjectResponseDto> {
+  async create(
+    createSubjectDto: CreateSubjectDto,
+  ): Promise<SubjectResponseDto> {
     const subject = this.subjectsRepository.create(createSubjectDto);
     const savedSubject = await this.subjectsRepository.save(subject);
 
@@ -67,7 +69,9 @@ export class SubjectsService {
       relations: ['major', 'major.university'],
     });
     if (!fullSubject) {
-      throw new NotFoundException(`Subject with ID ${savedSubject.id} not found`);
+      throw new NotFoundException(
+        `Subject with ID ${savedSubject.id} not found`,
+      );
     }
     return this.mapToResponseDto(fullSubject);
   }
@@ -93,17 +97,17 @@ export class SubjectsService {
     await this.gorseService.insertItems(gorseItems);
 
     const fullSubjects = await this.subjectsRepository.find({
-      where: { id: In(savedSubjects.map(s => s.id)) },
+      where: { id: In(savedSubjects.map((s) => s.id)) },
       relations: ['major', 'major.university'],
     });
-    return fullSubjects.map(subject => this.mapToResponseDto(subject));
+    return fullSubjects.map((subject) => this.mapToResponseDto(subject));
   }
 
   async findAll(): Promise<SubjectResponseDto[]> {
     const subjects = await this.subjectsRepository.find({
       relations: ['major', 'major.university'],
     });
-    return subjects.map(subject => this.mapToResponseDto(subject));
+    return subjects.map((subject) => this.mapToResponseDto(subject));
   }
 
   async findOne(id: number): Promise<SubjectResponseDto> {
@@ -149,6 +153,6 @@ export class SubjectsService {
       where: { id: In(ids) },
       relations: ['major', 'major.university'],
     });
-    return subjects.map(subject => this.mapToResponseDto(subject));
+    return subjects.map((subject) => this.mapToResponseDto(subject));
   }
 }

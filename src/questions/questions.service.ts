@@ -14,7 +14,9 @@ export class QuestionsService {
     private questionsRepository: Repository<Question>,
   ) {}
 
-  async create(createQuestionDto: CreateQuestionDto): Promise<QuestionResponseDto> {
+  async create(
+    createQuestionDto: CreateQuestionDto,
+  ): Promise<QuestionResponseDto> {
     const question = this.questionsRepository.create(createQuestionDto);
     const savedQuestion = await this.questionsRepository.save(question);
     return this.mapToResponseDto(savedQuestion);
@@ -27,14 +29,14 @@ export class QuestionsService {
       bulkCreateQuestionDto.questions,
     );
     const savedQuestions = await this.questionsRepository.save(questions);
-    return savedQuestions.map(question => this.mapToResponseDto(question));
+    return savedQuestions.map((question) => this.mapToResponseDto(question));
   }
 
   async findAll(): Promise<QuestionResponseDto[]> {
     const questions = await this.questionsRepository.find({
       relations: ['quizQuestions', 'quizQuestions.quiz'],
     });
-    return questions.map(question => this.mapToResponseDto(question));
+    return questions.map((question) => this.mapToResponseDto(question));
   }
 
   async findOne(id: number): Promise<QuestionResponseDto> {
@@ -80,12 +82,16 @@ export class QuestionsService {
     return {
       id: question.id,
       question: question.question_text,
-      options: question.properties.map(p => p.answers.map(a => a.answer)).flat(),
+      options: question.properties
+        .map((p) => p.answers.map((a) => a.answer))
+        .flat(),
       correct_answer: question.properties[0]?.correct_answer?.answer || '',
-      quiz: quiz ? {
-        id: quiz.id,
-        title: quiz.title,
-      } : undefined,
+      quiz: quiz
+        ? {
+            id: quiz.id,
+            title: quiz.title,
+          }
+        : undefined,
       created_at: question.created_at,
       updated_at: question.updated_at,
     };

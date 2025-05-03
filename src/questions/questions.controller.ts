@@ -60,7 +60,9 @@ export class QuestionsController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<ApiResponse<QuestionResponseDto>> {
+  async findOne(
+    @Param('id') id: string,
+  ): Promise<ApiResponse<QuestionResponseDto>> {
     const data = await this.questionsService.findOne(+id);
     return {
       data,

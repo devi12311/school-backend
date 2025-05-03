@@ -40,7 +40,7 @@ export class QuizzesService {
     const quizzes = await this.quizzesRepository.find({
       relations: ['quizQuestions', 'quizQuestions.question'],
     });
-    return quizzes.map(quiz => this.mapToResponseDto(quiz));
+    return quizzes.map((quiz) => this.mapToResponseDto(quiz));
   }
 
   async findByType(type: QuizType): Promise<QuizResponseDto[]> {
@@ -48,7 +48,7 @@ export class QuizzesService {
       where: { type },
       relations: ['quizQuestions', 'quizQuestions.question'],
     });
-    return quizzes.map(quiz => this.mapToResponseDto(quiz));
+    return quizzes.map((quiz) => this.mapToResponseDto(quiz));
   }
 
   async findOne(id: number): Promise<QuizResponseDto> {
@@ -62,13 +62,18 @@ export class QuizzesService {
     return this.findOne(savedQuiz.id);
   }
 
-  async bulkCreate(bulkCreateQuizDto: BulkCreateQuizDto): Promise<QuizResponseDto[]> {
+  async bulkCreate(
+    bulkCreateQuizDto: BulkCreateQuizDto,
+  ): Promise<QuizResponseDto[]> {
     const quizzes = this.quizzesRepository.create(bulkCreateQuizDto.quizzes);
     const savedQuizzes = await this.quizzesRepository.save(quizzes);
-    return Promise.all(savedQuizzes.map(quiz => this.findOne(quiz.id)));
+    return Promise.all(savedQuizzes.map((quiz) => this.findOne(quiz.id)));
   }
 
-  async update(id: number, updateQuizDto: UpdateQuizDto): Promise<QuizResponseDto> {
+  async update(
+    id: number,
+    updateQuizDto: UpdateQuizDto,
+  ): Promise<QuizResponseDto> {
     const quiz = await this.getFullQuiz(id);
     Object.assign(quiz, updateQuizDto);
     await this.quizzesRepository.save(quiz);
@@ -86,7 +91,7 @@ export class QuizzesService {
   ): Promise<QuizResponseDto> {
     const quiz = await this.getFullQuiz(id);
     const questions = await this.questionRepository.findByIds(
-      addQuestionsDto.questions.map(q => q.question_id),
+      addQuestionsDto.questions.map((q) => q.question_id),
     );
 
     const quizQuestions = questions.map((question, index) =>
@@ -158,7 +163,7 @@ export class QuizzesService {
       type: quiz.type,
       questions: quiz.quizQuestions
         .sort((a, b) => a.question_order - b.question_order)
-        .map(qq => ({
+        .map((qq) => ({
           id: qq.question.id,
           question: qq.question.question_text,
           properties: qq.question.properties,

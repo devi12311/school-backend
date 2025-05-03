@@ -95,7 +95,9 @@ export class MajorsController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<ApiResponse<MajorResponseDto>> {
+  async findOne(
+    @Param('id') id: string,
+  ): Promise<ApiResponse<MajorResponseDto>> {
     const data = await this.majorsService.findOne(+id);
     return {
       data,

@@ -21,4 +21,4 @@ export class QuizResponseDto {
 
   @Exclude()
   updated_at: Date;
-} 
+}

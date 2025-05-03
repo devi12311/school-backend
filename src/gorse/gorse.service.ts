@@ -8,6 +8,7 @@ import { MajorRecommendationDto } from './dto/major-recommendation.dto';
 import { SubjectRecommendationDto } from './dto/subject-recommendation.dto';
 import { ArticleRecommendationDto } from './dto/article-recommendation.dto';
 import { Major } from '../entities/major.entity';
+import { MajorResponseDto } from '../majors/dto/major-response.dto';
 
 @Injectable()
 export class GorseService {
@@ -75,21 +76,100 @@ export class GorseService {
   async getMajorRecommendations(
     userId: string,
     n: number = 10,
-  ): Promise<MajorRecommendationDto[]> {
+  ): Promise<{
+    universities: {
+      score: number;
+      website: any;
+      majors: Array<Partial<MajorResponseDto>>;
+      name: any;
+      description: any;
+      acceptance_rate: any;
+      logo: any;
+      banner: any;
+      location: any;
+      ranking: any;
+      tuition: any;
+      email: any
+    }[];
+    updated_at: Date;
+    created_at: Date
+  }> {
     const response = await this.client.getRecommend({
       userId,
       cursorOptions: { n },
       category: '1',
     });
     if (!response || !Array.isArray(response)) {
-      return [];
+      return {
+        universities: [],
+        created_at: new Date(),
+        updated_at: new Date(),
+      };
     }
     const ids = this.parseIds(response);
     const majors = await this.majorsService.findMany(ids);
-    return majors.map((major) => ({
-      name: major.name,
-      subjects: major.subjects.map((subject) => subject.name),
-    }));
+    const totalMajors: number = majors.length;
+
+    // Group majors by university and calculate scores
+    const universityMap = new Map<
+      number,
+      {
+        university: any;
+        majors: Array<Partial<MajorResponseDto>>;
+        score: number;
+      }
+    >();
+
+    majors.forEach((major) => {
+      if (!major.university_id) return;
+
+      const universityId = major.university.id;
+      const majorDto: Partial<MajorResponseDto> = {
+        name: major.name,
+        subjects: major.subjects.map((subject) => ({ name: subject.name })),
+        duration: major.duration,
+        job_placement_rate: major.job_placement_rate,
+        average_salary: major.average_salary,
+      };
+
+      if (!universityMap.has(universityId)) {
+        universityMap.set(universityId, {
+          university: major.university,
+          majors: [majorDto],
+          score: 1,
+        });
+      } else {
+        const entry = universityMap.get(universityId);
+        if (entry) {
+          entry.majors.push(majorDto);
+          entry.score += 1;
+        }
+      }
+    });
+
+    // Convert to the required format
+    const universities = Array.from(universityMap.values())
+      .map(({ university, majors, score }) => ({
+        name: university.name,
+        description: university.description,
+        location: university.location,
+        website: university.website,
+        ranking: university.ranking,
+        acceptance_rate: university.acceptance_rate,
+        logo: university.logo,
+        banner: university.banner,
+        email: university.email,
+        tuition: university.tuition,
+        score: score / totalMajors,
+        majors,
+      }))
+      .sort((a, b) => b.score - a.score); // Sort by score descending
+
+    return {
+      universities,
+      created_at: new Date(),
+      updated_at: new Date(),
+    };
   }
 
   async getSubjectRecommendations(

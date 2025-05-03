@@ -35,6 +35,12 @@ export class University {
   logo: string;
 
   @Column({ nullable: true })
+  tuition: string;
+
+  @Column({ nullable: true })
+  email: string;
+
+  @Column({ nullable: true })
   banner: string;
 
   @OneToMany(() => Major, (major) => major.university)

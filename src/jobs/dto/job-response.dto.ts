@@ -23,4 +23,4 @@ export class JobResponseDto {
 
   @Exclude()
   updated_at: Date;
-} 
+}

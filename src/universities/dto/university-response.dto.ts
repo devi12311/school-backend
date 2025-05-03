@@ -23,6 +23,8 @@ export class UniversityResponseDto {
   acceptance_rate: string;
   logo: string;
   banner: string;
+  email: string;
+  tuition: string;
   majors: MajorResponseDto[];
 
   @Exclude()
@@ -30,4 +32,4 @@ export class UniversityResponseDto {
 
   @Exclude()
   updated_at: Date;
-} 
+}

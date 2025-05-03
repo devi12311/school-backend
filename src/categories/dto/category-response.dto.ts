@@ -10,4 +10,4 @@ export class CategoryResponseDto {
 
   @Exclude()
   updated_at: Date;
-} 
+}

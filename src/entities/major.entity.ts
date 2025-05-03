@@ -30,6 +30,15 @@ export class Major {
   @JoinColumn({ name: 'category_id' })
   category: Category;
 
+  @Column({ nullable: true })
+  duration: string;
+
+  @Column({ nullable: true })
+  job_placement_rate: string;
+
+  @Column({ nullable: true })
+  average_salary: string;
+
   @Column()
   university_id: number;
 

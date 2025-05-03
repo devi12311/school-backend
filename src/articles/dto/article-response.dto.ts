@@ -18,4 +18,4 @@ export class ArticleResponseDto {
 
   @Exclude()
   updated_at: Date;
-} 
+}

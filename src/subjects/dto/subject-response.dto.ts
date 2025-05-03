@@ -23,4 +23,4 @@ export class SubjectResponseDto {
 
   @Exclude()
   updated_at: Date;
-} 
+}

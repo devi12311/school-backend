@@ -60,7 +60,9 @@ export class SubjectsController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<ApiResponse<SubjectResponseDto>> {
+  async findOne(
+    @Param('id') id: string,
+  ): Promise<ApiResponse<SubjectResponseDto>> {
     const data = await this.subjectsService.findOne(+id);
     return {
       data,

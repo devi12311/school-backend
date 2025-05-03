@@ -62,7 +62,9 @@ export class UniversitiesController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<ApiResponse<UniversityResponseDto>> {
+  async findOne(
+    @Param('id') id: string,
+  ): Promise<ApiResponse<UniversityResponseDto>> {
     const data = await this.universitiesService.findOne(+id);
     return {
       data,

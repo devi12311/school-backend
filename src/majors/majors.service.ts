@@ -141,7 +141,7 @@ export class MajorsService {
   async findMany(ids: number[]): Promise<Major[]> {
     return this.majorsRepository.find({
       where: { id: In(ids) },
-      relations: ['category', 'subjects'],
+      relations: ['category', 'subjects', 'university'],
     });
   }
 }
