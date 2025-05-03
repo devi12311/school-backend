@@ -7,6 +7,8 @@ import { AuthModule } from './auth/auth.module';
 import { CategoriesModule } from './categories/categories.module';
 import { MajorsModule } from './majors/majors.module';
 import { ArticlesModule } from './articles/articles.module';
+import { UniversitiesModule } from './universities/universities.module';
+import { SubjectsModule } from './subjects/subjects.module';
 import { User } from './entities/user.entity';
 import { Category } from './entities/category.entity';
 import { Major } from './entities/major.entity';
@@ -16,6 +18,8 @@ import { Question } from './entities/question.entity';
 import { QuizType } from './entities/quiz-type.entity';
 import { QuizQuestion } from './entities/quiz-question.entity';
 import { Job } from './entities/job.entity';
+import { University } from './entities/university.entity';
+import { JobsModule } from './jobs/jobs.module';
 
 @Module({
   imports: [
@@ -41,6 +45,7 @@ import { Job } from './entities/job.entity';
           QuizType,
           QuizQuestion,
           Job,
+          University,
         ],
         synchronize: configService.get('NODE_ENV') !== 'production',
       }),
@@ -50,6 +55,9 @@ import { Job } from './entities/job.entity';
     CategoriesModule,
     MajorsModule,
     ArticlesModule,
+    UniversitiesModule,
+    SubjectsModule,
+    JobsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

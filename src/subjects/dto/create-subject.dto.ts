@@ -1,6 +1,6 @@
 import { IsString, IsArray, IsNumber } from 'class-validator';
 
-export class CreateMajorDto {
+export class CreateSubjectDto {
   @IsString()
   name: string;
 
@@ -12,5 +12,5 @@ export class CreateMajorDto {
   category_id: number;
 
   @IsNumber()
-  university_id: number;
+  major_id: number;
 }

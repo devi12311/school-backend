@@ -1,6 +1,6 @@
 import { IsString, IsArray, IsNumber, IsOptional } from 'class-validator';
 
-export class UpdateMajorDto {
+export class UpdateSubjectDto {
   @IsString()
   @IsOptional()
   name?: string;
@@ -16,5 +16,5 @@ export class UpdateMajorDto {
 
   @IsNumber()
   @IsOptional()
-  university_id?: number;
+  major_id?: number;
 }

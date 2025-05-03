@@ -14,6 +14,7 @@ import { UpdateMajorDto } from './dto/update-major.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ApiResponse } from '../common/interfaces/api-response.interface';
 import { Major } from '../entities/major.entity';
+import { BulkCreateMajorDto } from './dto/bulk-create-major.dto';
 
 @Controller('majors')
 @UseGuards(JwtAuthGuard)
@@ -28,6 +29,18 @@ export class MajorsController {
     return {
       data,
       message: 'Major created successfully',
+      status: 201,
+    };
+  }
+
+  @Post('bulk')
+  async bulkCreate(
+    @Body() bulkCreateMajorDto: BulkCreateMajorDto,
+  ): Promise<ApiResponse<Major[]>> {
+    const data = await this.majorsService.bulkCreate(bulkCreateMajorDto);
+    return {
+      data,
+      message: 'Majors created successfully',
       status: 201,
     };
   }

@@ -8,14 +8,12 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { Category } from './category.entity';
+import { Major } from './major.entity';
 
 @Entity('subjects')
 export class Subject {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Column()
-  university_id: number;
 
   @Column()
   name: string;
@@ -29,6 +27,13 @@ export class Subject {
   @ManyToOne(() => Category)
   @JoinColumn({ name: 'category_id' })
   category: Category;
+
+  @Column()
+  major_id: number;
+
+  @ManyToOne(() => Major)
+  @JoinColumn({ name: 'major_id' })
+  major: Major;
 
   @CreateDateColumn()
   created_at: Date;

@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Major } from '../entities/major.entity';
 import { CreateMajorDto } from './dto/create-major.dto';
 import { UpdateMajorDto } from './dto/update-major.dto';
+import { BulkCreateMajorDto } from './dto/bulk-create-major.dto';
 
 @Injectable()
 export class MajorsService {
@@ -15,6 +16,11 @@ export class MajorsService {
   async create(createMajorDto: CreateMajorDto): Promise<Major> {
     const major = this.majorsRepository.create(createMajorDto);
     return this.majorsRepository.save(major);
+  }
+
+  async bulkCreate(bulkCreateMajorDto: BulkCreateMajorDto): Promise<Major[]> {
+    const majors = this.majorsRepository.create(bulkCreateMajorDto.majors);
+    return this.majorsRepository.save(majors);
   }
 
   async findAll(): Promise<Major[]> {
