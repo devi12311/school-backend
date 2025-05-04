@@ -212,6 +212,7 @@ export class GorseService {
     return articles.map((article) => ({
       name: article.name,
       url: article.url,
+      tags: article.tags,
       info: article.info,
     }));
   }
