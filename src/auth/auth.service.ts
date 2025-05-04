@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import { GorseService } from '../gorse/gorse.service';
 
 @Injectable()
 export class AuthService {
@@ -11,6 +12,7 @@ export class AuthService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
     private jwtService: JwtService,
+    private gorseService: GorseService,
   ) {}
 
   async validateUser(email: string, password: string): Promise<any> {
@@ -45,6 +47,15 @@ export class AuthService {
     });
 
     await this.usersRepository.save(user);
+    
+    // Create user in Gorse with their tags
+    try {
+      await this.gorseService.createUser(user.id, user.tags || []);
+    } catch (error) {
+      console.error('Failed to create user in Gorse:', error);
+      // We don't throw here to avoid blocking user registration if Gorse fails
+    }
+
     const { password, ...result } = user;
     return result;
   }

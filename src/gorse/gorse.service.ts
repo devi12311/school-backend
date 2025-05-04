@@ -10,10 +10,13 @@ import { Major } from '../entities/major.entity';
 import { MajorResponseDto } from '../majors/dto/major-response.dto';
 import { JobsService } from '../jobs/jobs.service';
 import { Job } from '../entities/job.entity';
+import axios from 'axios';
 
 @Injectable()
 export class GorseService {
   private client: Gorse<any>;
+  private readonly gorseApiUrl: string;
+  private readonly gorseApiKey: string;
 
   constructor(
     private configService: ConfigService,
@@ -26,12 +29,11 @@ export class GorseService {
     @Inject(forwardRef(() => JobsService))
     private jobsService: JobsService,
   ) {
+    this.gorseApiUrl = this.configService.get('GORSE_API_URL', 'http://localhost:8088');
+    this.gorseApiKey = this.configService.get('GORSE_API_KEY', 'api_key');
     this.client = new Gorse({
-      endpoint: this.configService.get(
-        'GORSE_ENDPOINT',
-        'http://127.0.0.1:8087',
-      ),
-      secret: this.configService.get('GORSE_API_KEY', 'api_key'),
+      endpoint: this.configService.get('GORSE_ENDPOINT', 'http://127.0.0.1:8087'),
+      secret: this.gorseApiKey,
     });
   }
 
@@ -260,5 +262,26 @@ export class GorseService {
         Timestamp: item.Timestamp || new Date().toISOString(),
       })),
     );
+  }
+
+  async createUser(userId: number, tags: string[]) {
+    try {
+      const response = await axios.post(
+        `${this.gorseApiUrl}/api/user`,
+        {
+          UserId: userId.toString(),
+          Labels: tags,
+        },
+        {
+          headers: {
+            'X-API-Key': this.gorseApiKey,
+          },
+        },
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Error creating user in Gorse:', error);
+      throw error;
+    }
   }
 }
