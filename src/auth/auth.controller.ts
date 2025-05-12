@@ -3,10 +3,11 @@ import {
   Post,
   Body,
   UnauthorizedException,
-  Put,
+  Put, InternalServerErrorException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { User } from '../entities/user.entity';
+import { v4 as uuidv4 } from 'uuid';
 
 @Controller('auth')
 export class AuthController {
@@ -35,7 +36,12 @@ export class AuthController {
   }
 
   @Post('gorse-user')
-  async createGorseUser(@Body() body: { userId: string; tags: string[] }) {
-    return this.authService.createGorseUser(body.userId, body.tags);
+  async createGorseUser(@Body() body: { tags: string[] }) {
+    const userId = uuidv4();
+    const finished = await this.authService.createGorseUser({ UserId: userId, Labels: body.tags });
+    if (!finished) {
+      throw new InternalServerErrorException('Failed to create Gorse user');
+    }
+    return { userId };
   }
 }

@@ -85,7 +85,10 @@ export class AuthService {
     return result;
   }
 
-  async createGorseUser(userId: string, tags: string[]) {
-    return this.gorseService.createUser({ UserId: userId, Labels: tags });
+  async createGorseUser(userData: {
+    UserId: string;
+    Labels?: string[];
+  }) {
+    return this.gorseService.createUser(userData);
   }
 }
