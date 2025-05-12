@@ -261,4 +261,12 @@ export class GorseService {
       })),
     );
   }
+
+  async createUser(userData: {
+    UserId: string;
+    Comment?: string;
+    Labels?: string[];
+  }) {
+    return this.client.insertUser(userData);
+  }
 }

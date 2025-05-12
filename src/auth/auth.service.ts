@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import { GorseService } from '../gorse/gorse.service';
 
 @Injectable()
 export class AuthService {
@@ -11,6 +12,7 @@ export class AuthService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
     private jwtService: JwtService,
+    private gorseService: GorseService,
   ) {}
 
   async validateUser(email: string, password: string): Promise<any> {
@@ -45,6 +47,10 @@ export class AuthService {
     });
 
     await this.usersRepository.save(user);
+
+    // Create Gorse user
+    await this.gorseService.createUser({ UserId: user.id.toString(), Labels: user.tags, Comment: "" });
+
     const { password, ...result } = user;
     return result;
   }
@@ -77,5 +83,9 @@ export class AuthService {
 
     const { password, ...result } = updatedUser;
     return result;
+  }
+
+  async createGorseUser(userId: string, tags: string[]) {
+    return this.gorseService.createUser({ UserId: userId, Labels: tags });
   }
 }

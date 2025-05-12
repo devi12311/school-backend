@@ -33,4 +33,9 @@ export class AuthController {
   async updateProfile(@Body() signupDto: Partial<User>) {
     return this.authService.updateProfile(signupDto);
   }
+
+  @Post('gorse-user')
+  async createGorseUser(@Body() body: { userId: string; tags: string[] }) {
+    return this.authService.createGorseUser(body.userId, body.tags);
+  }
 }
