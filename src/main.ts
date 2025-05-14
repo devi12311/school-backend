@@ -4,7 +4,7 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: {
-      origin: [process.env.FRONTEND_URL, 'http://localhost:5173'],
+      origin: ['http://localhost:5173', 'https://tek-front.n7ujc3.easypanel.host'],
       preflightContinue: true,
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Allowed methods
       credentials: true, // Allow credentials (e.g., cookies)
